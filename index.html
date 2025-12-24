@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Investimento - Alessandro Marques</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --accent: #38bdf8;
+            --border: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh;
+            margin: 0;
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .card { 
+            background: var(--card-bg); 
+            padding: 2.5rem; 
+            border-radius: 24px; 
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); 
+            width: 100%; 
+            max-width: 480px; 
+            border: 1px solid var(--border);
+        }
+        a {
+            text-decoration: none;
+        }
+        h2 { 
+            margin-bottom: 2rem; 
+            text-align: center; 
+            font-weight: 600; 
+            letter-spacing: -0.05em;
+            font-size: 1.8rem;
+        }
+
+        .field { margin-bottom: 25px; }
+        label { 
+            display: block; 
+            margin-bottom: 10px; 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            color: var(--text-dim); 
+            text-transform: uppercase; 
+            letter-spacing: 0.1em; 
+        }
+
+        input, select { 
+            width: 100%; 
+            height: 50px;
+            padding: 0 14px;
+            background: #0f172a;
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1); }
+
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            background-color: var(--accent); 
+            color: #082f49; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem; 
+            font-weight: 800; 
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            letter-spacing: 0.05em;
+        }
+
+        button:hover { transform: translateY(-3px); opacity: 0.95; box-shadow: 0 10px 15px -3px rgba(56, 189, 248, 0.3); }
+        button:active { transform: translateY(-1px); }
+
+        #resultado-resumo { 
+            margin-top: 30px; 
+            padding: 20px; 
+            border-radius: 16px; 
+            display: none; 
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0.05) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            text-align: center;
+        }
+
+        .total-destaque { 
+            font-size: 2.2rem; 
+            color: var(--accent); 
+            display: block; 
+            margin: 5px 0; 
+            font-weight: 800; 
+            letter-spacing: -0.02em;
+        }
+
+        .tabela-container { margin-top: 30px; display: none; width: 100%; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; color: var(--text-dim); }
+        th, td { padding: 14px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { color: var(--text-main); font-weight: 600; text-transform: uppercase; font-size: 0.7rem; }
+        tr:last-child td { border-bottom: none; }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            color: var(--text-dim);
+        }
+
+        .nome-autor {
+            font-weight: 800;
+            text-transform: uppercase;
+            animation: colorChange 4s infinite linear;
+        }
+
+        @keyframes colorChange {
+            0% { color: #38bdf8; }
+            33% { color: #a78bfa; }
+            66% { color: #fb7185; }
+            100% { color: #38bdf8; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Calculadoras de Juros Compostos PoolPays</h2>
+    
+    <div class="field">
+        <label for="valorInicial">Capital Inicial ($)</label>
+        <input type="number" id="valorInicial" placeholder="Ex: 5000.00" step="0.01">
+    </div>
+
+    <div class="field">
+        <label for="taxa">Taxa de Juros</label>
+        <select id="taxa">
+            <option value="0.005">1 Dia (0.5%)</option>
+            <option value="0.03">5 Dias (3%)</option>
+            <option value="0.07">10 Dias (7%)</option>
+            <option value="0.18">20 Dias (18%)</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label for="ciclos">Ciclos de Reinvestimento</label>
+        <input type="number" id="ciclos" min="1" max="12" value="1">
+    </div>
+
+    <button onclick="calcular()">CALCULAR RENDIMENTO</button>
+
+    <div id="resultado-resumo">
+        <label>Patrimônio Final</label>
+        <span id="valorFinal" class="total-destaque">$ 0.00</span>
+        <small style="color: var(--text-dim); font-weight: 400;">Lucro acumulado: <span id="apenasJuros" style="color: #4ade80; font-weight: 600;">$ 0.00</span></small>
+    </div>
+
+    <div id="tabela-container" class="tabela-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ciclo</th>
+                    <th>Início</th>
+                    <th>Lucro</th>
+                    <th>Final</th>
+                </tr>
+            </thead>
+            <tbody id="corpo-tabela"></tbody>
+        </table>
+    </div>
+</div>
+
+<footer>
+    Criado por <a href="https://www.instagram.com/getsark3d/">
+        <span class="nome-autor">Alessandro Marques</span>
+    </a>
+</footer>
+
+<script>
+    function calcular() {
+        const P = parseFloat(document.getElementById('valorInicial').value);
+        const taxa = parseFloat(document.getElementById('taxa').value);
+        const totalCiclos = parseInt(document.getElementById('ciclos').value);
+        
+        if (isNaN(P) || P <= 0 || nInvalido(totalCiclos)) {
+            alert("Por favor, insira valores válidos.");
+            return;
+        }
+
+        const corpoTabela = document.getElementById('corpo-tabela');
+        corpoTabela.innerHTML = "";
+        let saldoAtual = P;
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
+        for (let n = 1; n <= totalCiclos; n++) {
+            let inicio = saldoAtual;
+            let lucro = saldoAtual * taxa;
+            saldoAtual += lucro;
+
+            corpoTabela.innerHTML += `<tr>
+                <td style="color: var(--text-main); font-weight: 600;">${n}º</td>
+                <td>${fmt.format(inicio)}</td>
+                <td style="color: #4ade80;">+${fmt.format(lucro)}</td>
+                <td style="color: var(--text-main); font-weight: 500;">${fmt.format(saldoAtual)}</td>
+            </tr>`;
+        }
+
+        document.getElementById('valorFinal').innerText = fmt.format(saldoAtual);
+        document.getElementById('apenasJuros').innerText = fmt.format(saldoAtual - P);
+        
+        document.getElementById('resultado-resumo').style.display = 'block';
+        document.getElementById('tabela-container').style.display = 'block';
+    }
+
+    function nInvalido(n) { return n < 1 || n > 12 || isNaN(n); }
+</script>
+
+</body>
+</html>
