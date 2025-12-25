@@ -204,11 +204,6 @@
         const P = parseFloat(document.getElementById('valorInicial').value);
         const taxa = parseFloat(document.getElementById('taxa').value);
         const totalCiclos = parseInt(document.getElementById('ciclos').value);
-        
-        if (isNaN(P) || P <= 0 || nInvalido(totalCiclos)) {
-            alert("Por favor, insira valores válidos.");
-            return;
-        }
 
         const corpoTabela = document.getElementById('corpo-tabela');
         corpoTabela.innerHTML = "";
@@ -241,4 +236,5 @@
 </body>
 
 </html>
+
 
